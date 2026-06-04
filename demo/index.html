@@ -125,6 +125,25 @@
   .enter-btn:hover{background:var(--rally-deep);}
   .intro-cta .fine{font-size:.74rem; color:var(--ink-soft); line-height:1.45;}
   @media (max-width:720px){ .pgrid,.duo,.people{grid-template-columns:1fr;} .intro-card{padding:24px 20px;} }
+
+  /* ── Student arc primer ─────────────────── */
+  #primer{position:fixed; inset:0; z-index:50; background:rgba(16,29,61,.45); backdrop-filter:blur(3px); overflow-y:auto; padding:4vh 16px;}
+  #primer.hidden{display:none;}
+  .arc{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px;}
+  .step{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:13px 14px;}
+  .step .n{display:inline-flex; width:22px; height:22px; border-radius:50%; background:var(--rally); color:#fff; font-size:.72rem; font-weight:700; align-items:center; justify-content:center; margin-bottom:7px;}
+  .step h3{font-size:.8rem; color:var(--rally-deep); margin-bottom:4px;}
+  .step p{font-size:.78rem; line-height:1.5; color:#4A5878;}
+  .strip{border-radius:12px; padding:14px 16px; margin-bottom:11px;}
+  .strip h3{font-size:.84rem; margin-bottom:5px;}
+  .strip p{font-size:.84rem; line-height:1.55;}
+  .strip.skills{background:var(--gold-soft); border:1px solid #EAD9A6;}
+  .strip.skills h3{color:#8A6B12;} .strip.skills p{color:#5C4D1E;}
+  .strip.partner{background:var(--rally-soft); border:1px solid #C7D6F7;}
+  .strip.partner h3{color:#15368F;} .strip.partner p{color:#2A3B66;}
+  .ghost-btn{background:none; border:1px solid var(--line); color:var(--rally-deep); border-radius:11px; padding:12px 18px; font-size:.9rem; font-weight:600; cursor:pointer;}
+  .ghost-btn:hover{background:var(--rally-soft);}
+  @media (max-width:720px){ .arc{grid-template-columns:1fr;} }
 </style>
 </head>
 <body>
@@ -177,7 +196,51 @@
 
     <div class="intro-cta">
       <button class="enter-btn" onclick="showIntro(false)">Enter the workspace demo →</button>
+      <button class="ghost-btn" onclick="showPrimer(true)">What students do →</button>
       <div class="fine">A working concept of what a student opens in September 2026.<br>Synthetic data · the interaction pattern is the point.</div>
+    </div>
+  </div>
+</div>
+
+<div id="primer" class="hidden">
+  <div class="intro-card">
+    <div class="kicker">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 27 C8.4 27 3 21.6 3 15 C3 8.4 8.4 3 15 3 C21.6 3 27 8.4 27 15 C27 19.4 23.4 23 19 23 C14.6 23 11 19.4 11 15 C11 12.2 13.2 10 16 10 C18.8 10 21 12.2 21 15 C21 16.7 19.7 18 18 18" stroke="#1E4FD6" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="18" cy="15" r="1.8" fill="#D9A521"/>
+      </svg>
+      <span class="klabel">THE STUDENT ARC · ADAPTIVE ENVIRONMENTS LAB</span>
+    </div>
+
+    <h1>What students <em>do — and learn</em>.</h1>
+
+    <p class="lede">
+      Studio courses run on the corridor the way a teaching hospital runs on a ward: a real place, live data, consequences that matter. Over one semester, every student works all six stations of a functioning data ecosystem — and leaves having operated one, not just read about it.
+    </p>
+
+    <div class="arc">
+      <div class="step"><span class="n">1</span><h3>Field capture</h3><p>Fly drone transects, ride the 360° bike loops, paddle the LiDAR canoe passes. Every capture lands auto-tagged: location, device, conditions, contributor.</p></div>
+      <div class="step"><span class="n">2</span><h3>Pipeline &amp; processing</h3><p>Raw imagery and point clouds move through the intake pipeline into a cloud object store as COG, GeoParquet, and STAC. Students build — and break — real data infrastructure, safely.</p></div>
+      <div class="step"><span class="n">3</span><h3>AI-assisted analysis</h3><p>Species ID, canopy and trail-condition classification, seasonal change, cross-sections — deterministic GIS beside model-driven workflows, and the judgment of when to trust each.</p></div>
+      <div class="step"><span class="n">4</span><h3>Design inquiry</h3><p>Studio questions posed to the corridor intelligence come back with caveats and confidence levels. Data becomes design briefs; briefs become proposed interventions.</p></div>
+      <div class="step"><span class="n">5</span><h3>Field verification</h3><p>Students confirm or correct the model's classifications on site; their judgment becomes training signal. This loop is what makes the corpus trustworthy.</p></div>
+      <div class="step"><span class="n">6</span><h3>Open contribution</h3><p>Verified layers publish to the public corridor dataset; analyses ship as documented, reproducible notebooks. Work that outlasts the semester.</p></div>
+    </div>
+
+    <div class="strip skills">
+      <h3>What they leave with</h3>
+      <p>Cloud-native data engineering on a live geospatial workload · applied AI/ML with verification discipline · open spatial standards (COG · GeoParquet · STAC) · cross-disciplinary collaboration across design, health, and ecology · and the confidence to direct AI tools rather than defer to them.</p>
+    </div>
+
+    <div class="strip partner">
+      <h3>Why technology partners lean in</h3>
+      <p>These students are the builders enterprises will hire — trained from day one on cloud-native patterns, operating a real workload end to end. A partner's contribution lands in three durable places: the reference architecture of a teaching module designed to replicate across studios, corridors, and institutions; a growing public open dataset; and a visible showcase of applied AI in education. Natural surfaces for partnership: architecture working sessions, research and education credits, open-data hosting, and guest engineering sessions with the studio.</p>
+    </div>
+
+    <div class="intro-cta">
+      <button class="enter-btn" onclick="showPrimer(false)">Enter the workspace demo →</button>
+      <button class="ghost-btn" onclick="showIntro(true)">About the lab</button>
+      <div class="fine">One corridor, six stations, every student.<br>The Rivanna is implementation #1.</div>
     </div>
   </div>
 </div>
@@ -195,6 +258,7 @@
   <div class="spacer"></div>
   <span class="badge">CONCEPT DEMO · SYNTHETIC DATA</span>
   <button class="hood-btn" onclick="showIntro(true)">About AEL</button>
+  <button class="hood-btn" onclick="showPrimer(true)">Students</button>
   <button class="hood-btn" id="hoodbtn" onclick="toggleHood()">Under the hood</button>
 </header>
 
@@ -413,6 +477,12 @@ function toggleHood(){
 
 function showIntro(show){
   document.getElementById("intro").classList.toggle("hidden", !show);
+  if(show){ document.getElementById("primer").classList.add("hidden"); }
+}
+
+function showPrimer(show){
+  document.getElementById("primer").classList.toggle("hidden", !show);
+  if(show){ document.getElementById("intro").classList.add("hidden"); }
 }
 
 function setLyr(cb){
