@@ -223,8 +223,62 @@
       background-color: transparent;
     }
     
-    .hero .btn {
+    .hero-btns {
       margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    /* Explore: three components */
+    .explore h2 {
+      font-size: 1.875rem;
+      color: var(--wrx-gold);
+      margin-bottom: 8px;
+    }
+    
+    .explore-subtitle {
+      font-size: 1.125rem;
+      max-width: 896px;
+      margin-bottom: 48px;
+    }
+    
+    .explore-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+    
+    .explore-card {
+      display: block;
+      background-color: var(--rally-blue-dark);
+      padding: 32px;
+      border-radius: 8px;
+      border: 1px solid rgba(232, 232, 232, 0.2);
+      color: var(--fog);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    
+    .explore-card:hover {
+      border-color: var(--wrx-gold);
+      transform: translateY(-4px);
+      color: var(--fog);
+    }
+    
+    .explore-card h3 {
+      font-size: 1.25rem;
+      color: var(--wrx-gold);
+      margin-bottom: 12px;
+    }
+    
+    .explore-card p {
+      margin-bottom: 16px;
+    }
+    
+    .explore-card .card-cta {
+      font-size: 14px;
+      color: var(--wrx-gold);
+      font-weight: 500;
     }
     
     /* Sections */
@@ -461,6 +515,8 @@
       <a href="#hero" class="nav-logo">AEL</a>
       <div class="nav-links">
         <a href="#mission">Mission</a>
+        <a href="/students/">Students</a>
+        <a href="/demo/">Demo</a>
         <a href="#team">Team</a>
         <a href="#connect">Connect</a>
       </div>
@@ -474,6 +530,8 @@
     </nav>
     <div class="mobile-menu" id="mobile-menu">
       <a href="#mission" onclick="closeMenu()">Mission</a>
+      <a href="/students/">Students</a>
+      <a href="/demo/">Demo</a>
       <a href="#team" onclick="closeMenu()">Team</a>
       <a href="#connect" onclick="closeMenu()">Connect</a>
     </div>
@@ -489,10 +547,13 @@
         <span>Lab</span>
       </h1>
       <p class="hero-tagline">Designing environmental technologies that sense, learn, and evolve.</p>
-      <a href="#mission" class="btn">
-        Learn more
-        <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-      </a>
+      <div class="hero-btns">
+        <a href="#mission" class="btn">
+          Learn more
+          <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </a>
+        <a href="/demo/" class="btn btn-outline">Open the workspace demo →</a>
+      </div>
     </div>
   </section>
 
@@ -525,6 +586,31 @@
       </div>
       
       <p class="principles-footer">The Lab develops tools and takes on projects that serve as prototypes where physical conditions and computational models evolve together, generating knowledge that transfers across contexts.</p>
+    </div>
+  </section>
+
+  <!-- Explore: three components -->
+  <section class="section explore" id="explore">
+    <div class="section-wide">
+      <h2>The Lab in three parts</h2>
+      <p class="explore-subtitle">We start by teaching it. This summer the Lab is building its teaching chassis on the Rivanna River corridor in Charlottesville — three capture platforms (drone + LiDAR by air, 360° cameras by bike, LiDAR and water sensors by canoe) feeding one shared, queryable corpus. The Rivanna is implementation #1; the pattern is built to transfer.</p>
+      <div class="explore-grid">
+        <a class="explore-card" href="#mission">
+          <h3>01 · The Lab</h3>
+          <p>Philosophy, principles, and people — why adaptive environments, and why now.</p>
+          <span class="card-cta">You're here ↑</span>
+        </a>
+        <a class="explore-card" href="/students/">
+          <h3>02 · Students</h3>
+          <p>What students do and learn: one semester, six stations of a working data ecosystem — from field capture to open contribution.</p>
+          <span class="card-cta">What students do →</span>
+        </a>
+        <a class="explore-card" href="/demo/">
+          <h3>03 · The Demo</h3>
+          <p>An interactive concept of the September 2026 student workspace: ask the corridor a design question, watch it answer with evidence and caveats.</p>
+          <span class="card-cta">Open the workspace →</span>
+        </a>
+      </div>
     </div>
   </section>
 

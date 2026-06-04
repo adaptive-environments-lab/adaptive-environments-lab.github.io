@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Students | Adaptive Environments Lab</title>
+  <meta name="description" content="What students do and learn at the Adaptive Environments Lab: one semester, six stations of a working environmental data ecosystem on the Rivanna corridor.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --rally-blue: #003DA5;
+      --rally-blue-dark: #002D7A;
+      --wrx-gold: #C9A227;
+      --fog: #E8E8E8;
+      --snow: #FAFAFA;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--rally-blue);
+      color: var(--fog);
+      line-height: 1.7;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+    a { color: var(--wrx-gold); text-decoration: none; transition: color 0.3s; }
+    a:hover { color: var(--snow); }
+
+    /* Navigation */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background-color: rgba(0, 61, 165, 0.95); backdrop-filter: blur(8px); }
+    .nav-inner { max-width: 1152px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; color: var(--fog); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { font-size: 14px; color: var(--fog); position: relative; }
+    .nav-links a:hover { color: var(--wrx-gold); }
+    .nav-links a.active { color: var(--wrx-gold); }
+    .mobile-menu-btn { display: none; background: none; border: none; color: var(--fog); cursor: pointer; padding: 8px; }
+    .mobile-menu { display: none; background-color: var(--rally-blue-dark); border-top: 1px solid rgba(232, 232, 232, 0.2); }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a { display: block; padding: 16px 24px; color: var(--fog); }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+    }
+
+    /* Page header */
+    .page-head { padding: 160px 24px 64px; }
+    .page-head-inner { max-width: 896px; margin: 0 auto; }
+    .kicker { font-size: 13px; letter-spacing: 2.5px; font-weight: 600; color: rgba(232, 232, 232, 0.6); margin-bottom: 16px; font-family: 'Space Grotesk', system-ui, sans-serif; }
+    .page-head h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); color: var(--wrx-gold); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 24px; }
+    .page-head .lede { font-size: 1.25rem; color: var(--snow); }
+    .page-head .sub { margin-top: 16px; font-size: 1rem; color: rgba(232, 232, 232, 0.75); }
+
+    /* Sections */
+    .section { padding: 64px 24px 96px; }
+    .section-inner { max-width: 896px; margin: 0 auto; }
+    .section-wide { max-width: 1152px; margin: 0 auto; }
+    .section h2 { font-size: 1.875rem; color: var(--wrx-gold); margin-bottom: 8px; }
+    .section .section-sub { font-size: 1.125rem; margin-bottom: 48px; }
+
+    /* Stations */
+    .stations { background-color: var(--rally-blue-dark); }
+    .station-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+    .station { background-color: var(--rally-blue); padding: 28px 28px 24px; border-radius: 8px; border: 1px solid rgba(232, 232, 232, 0.2); }
+    .station .num { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--wrx-gold); color: var(--wrx-gold); font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; margin-bottom: 16px; }
+    .station h3 { font-size: 1.15rem; color: var(--wrx-gold); margin-bottom: 8px; }
+    .station p { font-size: 15px; }
+
+    /* Outcome blocks */
+    .outcome { border-left: 2px solid var(--wrx-gold); padding-left: 24px; margin-bottom: 40px; }
+    .outcome h3 { font-size: 1.35rem; color: var(--wrx-gold); margin-bottom: 12px; }
+    .outcome p { font-size: 17px; }
+
+    /* CTA */
+    .cta-row { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 16px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: var(--wrx-gold); color: var(--rally-blue); font-weight: 500; border-radius: 4px; transition: background-color 0.3s; }
+    .btn:hover { background-color: var(--snow); color: var(--rally-blue); }
+    .btn-outline { background-color: transparent; border: 1px solid rgba(232, 232, 232, 0.4); color: var(--fog); }
+    .btn-outline:hover { border-color: var(--wrx-gold); color: var(--wrx-gold); background-color: transparent; }
+
+    /* Footer */
+    .footer { padding: 32px 24px; border-top: 1px solid rgba(232, 232, 232, 0.2); }
+    .footer-inner { max-width: 1152px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .footer-copyright { font-size: 14px; color: rgba(232, 232, 232, 0.6); }
+    .footer-links { display: flex; gap: 24px; font-size: 14px; }
+    .footer-links a { color: rgba(232, 232, 232, 0.6); }
+    @media (min-width: 640px) {
+      .footer-inner { flex-direction: row; justify-content: space-between; }
+    }
+
+    .icon { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header class="nav">
+    <nav class="nav-inner">
+      <a href="/" class="nav-logo">AEL</a>
+      <div class="nav-links">
+        <a href="/#mission">Mission</a>
+        <a href="/students/" class="active">Students</a>
+        <a href="/demo/">Demo</a>
+        <a href="/#team">Team</a>
+        <a href="/#connect">Connect</a>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMenu()" aria-label="Toggle menu">
+        <svg class="icon" viewBox="0 0 24 24">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/#mission">Mission</a>
+      <a href="/students/">Students</a>
+      <a href="/demo/">Demo</a>
+      <a href="/#team">Team</a>
+      <a href="/#connect">Connect</a>
+    </div>
+  </header>
+
+  <!-- Page header -->
+  <section class="page-head">
+    <div class="page-head-inner">
+      <p class="kicker">THE STUDENT ARC</p>
+      <h1>What students do — and learn.</h1>
+      <p class="lede">Studio courses run on the corridor the way a teaching hospital runs on a ward: a real place, live data, consequences that matter. Over one semester, every student works all six stations of a functioning data ecosystem — and leaves having operated one, not just read about it.</p>
+      <p class="sub">The Rivanna River corridor in Charlottesville is implementation #1. Courses are open to students from Architecture, Landscape Architecture, Public Health, Environmental Science, Data Science, and beyond.</p>
+    </div>
+  </section>
+
+  <!-- Six stations -->
+  <section class="section stations">
+    <div class="section-wide">
+      <h2>One semester, six stations</h2>
+      <p class="section-sub">From raw field capture to public contribution — every student touches the full loop.</p>
+      <div class="station-grid">
+        <div class="station">
+          <span class="num">1</span>
+          <h3>Field capture</h3>
+          <p>Fly drone transects, ride the 360° bike loops, paddle the LiDAR canoe passes. Every capture lands auto-tagged: location, device, conditions, contributor.</p>
+        </div>
+        <div class="station">
+          <span class="num">2</span>
+          <h3>Pipeline &amp; processing</h3>
+          <p>Raw imagery and point clouds move through the intake pipeline into a cloud object store as COG, GeoParquet, and STAC. Students build — and break — real data infrastructure, safely.</p>
+        </div>
+        <div class="station">
+          <span class="num">3</span>
+          <h3>AI-assisted analysis</h3>
+          <p>Species ID, canopy and trail-condition classification, seasonal change, cross-sections — deterministic GIS beside model-driven workflows, and the judgment of when to trust each.</p>
+        </div>
+        <div class="station">
+          <span class="num">4</span>
+          <h3>Design inquiry</h3>
+          <p>Studio questions posed to the corridor intelligence come back with caveats and confidence levels. Data becomes design briefs; briefs become proposed interventions.</p>
+        </div>
+        <div class="station">
+          <span class="num">5</span>
+          <h3>Field verification</h3>
+          <p>Students confirm or correct the model's classifications on site; their judgment becomes training signal. This loop is what makes the corpus trustworthy.</p>
+        </div>
+        <div class="station">
+          <span class="num">6</span>
+          <h3>Open contribution</h3>
+          <p>Verified layers publish to the public corridor dataset; analyses ship as documented, reproducible notebooks. Work that outlasts the semester.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Outcomes -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="outcome">
+        <h3>What they leave with</h3>
+        <p>Cloud-native data engineering on a live geospatial workload · applied AI/ML with verification discipline · open spatial standards (COG · GeoParquet · STAC) · cross-disciplinary collaboration across design, health, and ecology · and the confidence to direct AI tools rather than defer to them.</p>
+      </div>
+      <div class="outcome">
+        <h3>Why technology partners lean in</h3>
+        <p>These students are the builders enterprises will hire — trained from day one on cloud-native patterns, operating a real workload end to end. A partner's contribution lands in three durable places: the reference architecture of a teaching module designed to replicate across studios, corridors, and institutions; a growing public open dataset; and a visible showcase of applied AI in education. Natural surfaces for partnership: architecture working sessions, research and education credits, open-data hosting, and guest engineering sessions with the studio.</p>
+      </div>
+      <div class="cta-row">
+        <a href="/demo/" class="btn">Open the workspace demo →</a>
+        <a href="/" class="btn btn-outline">About the Lab</a>
+        <a href="mailto:ael@virginia.edu" class="btn btn-outline">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-copyright">© 2026 Adaptive Environments Lab</span>
+      <div class="footer-links">
+        <a href="https://www.arch.virginia.edu" target="_blank">UVA School of Architecture</a>
+        <a href="https://uvamedical.design" target="_blank">UVA Medical Design Program</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobile-menu').classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
