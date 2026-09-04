@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Adaptive Environments Lab</title>
+  <meta name="description" content="Working demos from the Adaptive Environments Lab — interactive concepts for corridor intelligence, teaching, and design.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --rally-blue: #003DA5;
+      --rally-blue-dark: #002D7A;
+      --wrx-gold: #C9A227;
+      --fog: #E8E8E8;
+      --snow: #FAFAFA;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--rally-blue);
+      color: var(--fog);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+    a { color: var(--wrx-gold); text-decoration: none; transition: color 0.3s; }
+    a:hover { color: var(--snow); }
+
+    /* Navigation — same as index.html */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background-color: rgba(0, 61, 165, 0.95);
+      backdrop-filter: blur(8px);
+    }
+    .nav-inner {
+      max-width: 1152px; margin: 0 auto; padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 600; color: var(--fog); text-decoration: none; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { font-size: 14px; color: var(--fog); position: relative; }
+    .nav-links a.active { color: var(--wrx-gold); }
+    .nav-links a:hover { color: var(--wrx-gold); }
+    .mobile-menu-btn { display: none; background: none; border: none; color: var(--fog); cursor: pointer; padding: 8px; }
+    .mobile-menu { display: none; background-color: var(--rally-blue-dark); border-top: 1px solid rgba(232, 232, 232, 0.2); }
+    .mobile-menu.open { display: block; }
+    .mobile-menu a { display: block; padding: 16px 24px; color: var(--fog); }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+    }
+
+    .icon { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+
+    /* Page header */
+    .page-header {
+      padding: 160px 24px 64px;
+      max-width: 1152px;
+      margin: 0 auto;
+    }
+    .page-header .kicker {
+      font-size: 13px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase;
+      color: rgba(232, 232, 232, 0.55); margin-bottom: 16px;
+    }
+    .page-header h1 {
+      font-size: clamp(2.25rem, 6vw, 3.5rem);
+      color: var(--wrx-gold);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .page-header p {
+      font-size: 1.125rem;
+      max-width: 720px;
+      color: var(--fog);
+    }
+
+    /* Project grid */
+    .projects {
+      max-width: 1152px;
+      margin: 0 auto;
+      padding: 0 24px 120px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 32px;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      background-color: var(--rally-blue-dark);
+      border: 1px solid rgba(232, 232, 232, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      color: var(--fog);
+    }
+    .project-card:hover { border-color: var(--wrx-gold); transform: translateY(-4px); color: var(--fog); }
+
+    .project-card .status {
+      display: inline-flex;
+      align-self: flex-start;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin: 24px 24px 0;
+    }
+    .status.live { background: rgba(201, 162, 39, 0.16); border: 1px solid rgba(201, 162, 39, 0.4); color: var(--wrx-gold); }
+    .status.building { background: rgba(232, 232, 232, 0.08); border: 1px solid rgba(232, 232, 232, 0.25); color: rgba(232, 232, 232, 0.75); }
+    .status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .status.building .dot { animation: pulse 2.2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .project-card .body { padding: 16px 24px 28px; flex: 1; display: flex; flex-direction: column; }
+    .project-card h3 { font-size: 1.35rem; color: var(--wrx-gold); margin-bottom: 4px; }
+    .project-card .subtitle { font-size: 13px; color: rgba(232, 232, 232, 0.55); margin-bottom: 16px; }
+    .project-card p { font-size: 15px; margin-bottom: 20px; flex: 1; }
+    .project-card .meta {
+      font-size: 12px; color: rgba(232, 232, 232, 0.5);
+      border-top: 1px solid rgba(232, 232, 232, 0.15);
+      padding-top: 14px; margin-bottom: 16px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .project-card .cta {
+      font-size: 14px; font-weight: 500; color: var(--wrx-gold);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .project-card.disabled { opacity: 0.7; cursor: default; }
+    .project-card.disabled:hover { border-color: rgba(232, 232, 232, 0.2); transform: none; }
+    .project-card.disabled .cta { color: rgba(232, 232, 232, 0.4); }
+
+    /* Footer — same as index.html */
+    .footer { padding: 32px 24px; border-top: 1px solid rgba(232, 232, 232, 0.2); }
+    .footer-inner { max-width: 1152px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .footer-copyright { font-size: 14px; color: rgba(232, 232, 232, 0.6); }
+    .footer-links { display: flex; gap: 24px; font-size: 14px; }
+    .footer-links a { color: rgba(232, 232, 232, 0.6); }
+    @media (min-width: 640px) {
+      .footer-inner { flex-direction: row; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <header class="nav" id="nav">
+    <nav class="nav-inner">
+      <a href="/" class="nav-logo">AEL</a>
+      <div class="nav-links">
+        <a href="/#mission">Mission</a>
+        <a href="/students/">Students</a>
+        <a href="/projects/" class="active">Projects</a>
+        <a href="/#team">Team</a>
+        <a href="/#connect">Connect</a>
+      </div>
+      <button class="mobile-menu-btn" onclick="toggleMenu()" aria-label="Toggle menu">
+        <svg class="icon" viewBox="0 0 24 24">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </nav>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/#mission" onclick="closeMenu()">Mission</a>
+      <a href="/students/">Students</a>
+      <a href="/projects/">Projects</a>
+      <a href="/#team" onclick="closeMenu()">Team</a>
+      <a href="/#connect" onclick="closeMenu()">Connect</a>
+    </div>
+  </header>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <div class="kicker">Working demos</div>
+    <h1>Projects</h1>
+    <p>Interactive concepts the Lab is building in the open — each one grounded in a real corridor, real data where it exists, and honest about what's still synthetic or planned.</p>
+  </div>
+
+  <!-- Project grid -->
+  <div class="projects">
+    <a class="project-card" href="/demo/rivanna/">
+      <span class="status live"><span class="dot"></span>Concept demo</span>
+      <div class="body">
+        <h3>Rivanna Corridor Workspace</h3>
+        <div class="subtitle">Teaching chassis — Darden Towe / Pen Park reach</div>
+        <p>An interactive concept of the September 2026 student workspace: ask the corridor a design question, watch the system answer with evidence and caveats, drawn from a synthetic but real-format corpus (STAC, GeoParquet, COG).</p>
+        <div class="meta">
+          <span>Reach: Darden Towe / Pen Park, Rivanna River</span>
+          <span>Data: synthetic, real formats — badged throughout</span>
+        </div>
+        <span class="cta">Open the workspace →</span>
+      </div>
+    </a>
+
+    <div class="project-card disabled">
+      <span class="status building"><span class="dot"></span>In development</span>
+      <div class="body">
+        <h3>Woolen Mills Corridor Choreography</h3>
+        <div class="subtitle">Real-time data + sequenced scanning — Woolen Mills reach</div>
+        <p>A working instrument, not a teaching concept: live gauge data, sequenced LiDAR scans, and a standing set of conditional management rules that help designers choreograph a corridor for geomorphological flexibility, biodiversity, and recreation at once.</p>
+        <div class="meta">
+          <span>Reach: Woolen Mills, Rivanna/Moore's Creek confluence</span>
+          <span>Data: real live feeds + real scans as they're captured</span>
+        </div>
+        <span class="cta">Coming soon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-copyright">© 2026 Adaptive Environments Lab</span>
+      <div class="footer-links">
+        <a href="https://www.arch.virginia.edu" target="_blank">UVA School of Architecture</a>
+        <a href="https://uvamedical.design" target="_blank">UVA Medical Design Program</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobile-menu').classList.toggle('open');
+    }
+    function closeMenu() {
+      document.getElementById('mobile-menu').classList.remove('open');
+    }
+  </script>
+</body>
+</html>

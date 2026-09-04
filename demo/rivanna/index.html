@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AEL · Rivanna Corridor · Fall 2026 — Workspace Demo</title>
+<style>
+  :root{
+    --rally:#1E4FD6; --rally-deep:#15368F; --rally-soft:#E8EEFC;
+    --gold:#D9A521; --gold-soft:#FBF3DC;
+    --ink:#16233F; --ink-soft:#5A6B8C;
+    --paper:#F7F9FD; --card:#FFFFFF; --line:#DCE4F2;
+    --river:#6FA8D6; --canopy:#5F9E66; --warn:#C2542E; --teal:#2E8FA3;
+    font-size:15px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--paper); color:var(--ink); height:100vh; display:flex; flex-direction:column; overflow:hidden;}
+
+  /* ── Header ─────────────────────────────── */
+  header{background:var(--card); border-bottom:1px solid var(--line); padding:10px 18px; display:flex; align-items:center; gap:14px; flex-shrink:0;}
+  .mark{display:flex; align-items:center; gap:9px;}
+  .mark svg{display:block;}
+  .mark .word{font-weight:750; letter-spacing:.4px; font-size:1.05rem;}
+  .mark .word span{color:var(--rally);}
+  .crumb{color:var(--ink-soft); font-size:.92rem; border-left:1px solid var(--line); padding-left:14px;}
+  .crumb b{color:var(--ink); font-weight:600;}
+  header .spacer{flex:1;}
+  .badge{font-size:.68rem; font-weight:700; letter-spacing:.8px; color:var(--rally-deep); background:var(--rally-soft); border:1px solid #C7D6F7; padding:3px 8px; border-radius:99px; white-space:nowrap;}
+  .hood-btn{font-size:.8rem; font-weight:600; color:var(--rally-deep); background:none; border:1px solid var(--line); border-radius:8px; padding:6px 11px; cursor:pointer; text-decoration:none; display:inline-block;}
+  .hood-btn:hover{background:var(--rally-soft);}
+
+  /* ── Update banner ──────────────────────── */
+  .banner{background:var(--rally-deep); color:#EAF0FF; font-size:.82rem; padding:6px 18px; display:flex; gap:8px; align-items:center; flex-shrink:0;}
+  .banner .dot{width:7px; height:7px; border-radius:50%; background:var(--gold); flex-shrink:0; animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.35;}}
+
+  /* ── Pipeline (under the hood) ──────────── */
+  #hood{display:none; background:#101D3D; color:#D9E2F5; padding:14px 18px 16px; flex-shrink:0; font-size:.8rem;}
+  #hood.open{display:block;}
+  #hood .flow{display:flex; align-items:stretch; gap:8px; flex-wrap:wrap;}
+  #hood .stage{background:#1A2A55; border:1px solid #2C3F73; border-radius:10px; padding:8px 12px; min-width:130px;}
+  #hood .stage h4{font-size:.68rem; letter-spacing:.8px; color:var(--gold); margin-bottom:4px; font-weight:700;}
+  #hood .stage div{line-height:1.45; color:#C3CFE8;}
+  #hood .arrow{align-self:center; color:#5470A8; font-size:1.1rem;}
+  #hood .note{margin-top:9px; color:#8FA3CC; font-size:.75rem;}
+
+  /* ── Main grid ──────────────────────────── */
+  main{flex:1; display:flex; min-height:0;}
+
+  /* Chat pane */
+  #chat{width:39%; min-width:340px; background:var(--card); border-right:1px solid var(--line); display:flex; flex-direction:column;}
+  #log{flex:1; overflow-y:auto; padding:16px 16px 8px; scroll-behavior:smooth;}
+  .msg{max-width:92%; margin-bottom:12px; line-height:1.5; font-size:.92rem;}
+  .msg.user{margin-left:auto; background:var(--rally); color:#fff; padding:9px 13px; border-radius:14px 14px 3px 14px;}
+  .msg.sys{background:var(--paper); border:1px solid var(--line); padding:11px 13px; border-radius:14px 14px 14px 3px;}
+  .msg.sys .cav{margin-top:8px; padding:8px 10px; background:var(--gold-soft); border-left:3px solid var(--gold); border-radius:6px; font-size:.86rem;}
+  .trace{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.74rem; color:var(--ink-soft); margin:0 0 6px 4px;}
+  .trace b{color:var(--rally-deep); font-weight:600;}
+  .hello{color:var(--ink-soft); font-size:.88rem; padding:12px 14px; background:var(--paper); border:1px dashed var(--line); border-radius:12px; margin-bottom:14px; line-height:1.55;}
+  #chips{padding:10px 14px; border-top:1px solid var(--line); display:flex; flex-direction:column; gap:7px; flex-shrink:0;}
+  .chip{font-size:.83rem; text-align:left; background:var(--rally-soft); color:var(--rally-deep); border:1px solid #C7D6F7; padding:8px 12px; border-radius:10px; cursor:pointer; line-height:1.35;}
+  .chip:hover{background:#DBE6FB;}
+  .chip:disabled{opacity:.45; cursor:default;}
+  #inputrow{display:flex; gap:8px; padding:10px 14px 14px; flex-shrink:0;}
+  #inp{flex:1; border:1px solid var(--line); border-radius:10px; padding:9px 12px; font-size:.9rem; outline:none;}
+  #inp:focus{border-color:var(--rally);}
+  #send{background:var(--rally); color:#fff; border:none; border-radius:10px; padding:0 16px; font-weight:600; cursor:pointer;}
+
+  /* Map pane */
+  #mapwrap{flex:1; position:relative; background:linear-gradient(160deg,#EFF4FB 0%,#E6EEF7 100%);}
+  #map{width:100%; height:100%;}
+  #layers{position:absolute; top:14px; right:14px; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:12px; padding:11px 13px; font-size:.8rem; box-shadow:0 4px 18px rgba(22,35,63,.08); max-width:215px;}
+  #layers h3{font-size:.68rem; letter-spacing:.9px; color:var(--ink-soft); margin-bottom:7px; font-weight:700;}
+  #layers label{display:flex; align-items:center; gap:7px; padding:2.5px 0; cursor:pointer; user-select:none;}
+  #layers input{accent-color:var(--rally);}
+  .sw{width:11px; height:11px; border-radius:3px; flex-shrink:0;}
+  #legendzones{position:absolute; left:14px; bottom:14px; background:rgba(255,255,255,.94); border:1px solid var(--line); border-radius:12px; padding:10px 13px; font-size:.78rem; box-shadow:0 4px 18px rgba(22,35,63,.08); display:none; line-height:1.5;}
+  #legendzones b{color:var(--rally-deep);}
+
+  footer{background:var(--card); border-top:1px solid var(--line); color:var(--ink-soft); font-size:.72rem; padding:6px 18px; flex-shrink:0; display:flex; justify-content:space-between; gap:12px;}
+
+  /* SVG layer styling */
+  .lyr{transition:opacity .45s;}
+  .lyr.off{opacity:0; pointer-events:none;}
+  .zone{opacity:0; transition:opacity .6s;}
+  .zone.on{opacity:1;}
+  .pulse-ring{animation:ring 1.6s ease-out infinite;}
+  @keyframes ring{0%{stroke-opacity:.85; r:14;} 100%{stroke-opacity:0; r:34;}}
+  .miniprofile{margin-top:8px; background:#fff; border:1px solid var(--line); border-radius:8px; padding:6px;}
+  .typing::after{content:"▌"; animation:blink 1s steps(1) infinite; color:var(--rally);}
+  @keyframes blink{50%{opacity:0;}}
+
+  /* ── AEL overview (intro overlay) ───────── */
+  #intro{position:fixed; inset:0; z-index:50; background:rgba(16,29,61,.45); backdrop-filter:blur(3px); overflow-y:auto; padding:4vh 16px;}
+  #intro.hidden{display:none;}
+  .intro-card{max-width:860px; margin:0 auto 6vh; background:var(--card); border-radius:18px; box-shadow:0 24px 70px rgba(16,29,61,.35); padding:34px 38px 28px;}
+  .intro-card .kicker{display:flex; align-items:center; gap:10px; margin-bottom:16px;}
+  .intro-card .kicker .klabel{font-size:.74rem; font-weight:700; letter-spacing:1.6px; color:var(--ink-soft);}
+  .intro-card h1{font-size:1.75rem; line-height:1.18; letter-spacing:-.2px; margin-bottom:12px;}
+  .intro-card h1 em{color:var(--rally); font-style:normal;}
+  .intro-card .lede{font-size:.99rem; line-height:1.6; color:#33415F; margin-bottom:20px;}
+  .pgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px;}
+  .pcard{background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:13px 14px;}
+  .pcard h3{font-size:.8rem; color:var(--rally-deep); margin-bottom:5px;}
+  .pcard p{font-size:.8rem; line-height:1.5; color:#4A5878;}
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;}
+  .duo .block{border-radius:12px; padding:15px 16px;}
+  .duo .block h3{font-size:.84rem; margin-bottom:6px;}
+  .duo .block p{font-size:.84rem; line-height:1.55;}
+  .block.lab{background:var(--rally-soft); border:1px solid #C7D6F7;}
+  .block.lab h3{color:var(--rally-deep);}
+  .block.lab p{color:#2A3B66;}
+  .block.riv{background:var(--gold-soft); border:1px solid #EAD9A6;}
+  .block.riv h3{color:#8A6B12;}
+  .block.riv p{color:#5C4D1E;}
+  .people{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px;}
+  .person{display:flex; gap:11px; align-items:flex-start; background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:12px 13px;}
+  .person .avatar{width:38px; height:38px; border-radius:50%; background:var(--rally-deep); color:#fff; font-weight:700; font-size:.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .person .avatar.g{background:var(--gold); color:#3D2F05;}
+  .person b{font-size:.84rem; display:block; margin-bottom:2px;}
+  .person p{font-size:.76rem; line-height:1.45; color:#4A5878;}
+  .intro-cta{display:flex; align-items:center; gap:14px; border-top:1px solid var(--line); padding-top:18px;}
+  .enter-btn{background:var(--rally); color:#fff; border:none; border-radius:11px; padding:12px 22px; font-size:.95rem; font-weight:650; cursor:pointer;}
+  .enter-btn:hover{background:var(--rally-deep);}
+  .intro-cta .fine{font-size:.74rem; color:var(--ink-soft); line-height:1.45;}
+  @media (max-width:720px){ .pgrid,.duo,.people{grid-template-columns:1fr;} .intro-card{padding:24px 20px;} }
+
+  /* ── Site links ──────────────────────── */
+  .ghost-btn{background:none; border:1px solid var(--line); color:var(--rally-deep); border-radius:11px; padding:12px 18px; font-size:.9rem; font-weight:600; cursor:pointer; text-decoration:none; display:inline-block;}
+  .ghost-btn:hover{background:var(--rally-soft);}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="intro-card">
+    <div class="kicker">
+      <svg width="26" height="26" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 27 C8.4 27 3 21.6 3 15 C3 8.4 8.4 3 15 3 C21.6 3 27 8.4 27 15 C27 19.4 23.4 23 19 23 C14.6 23 11 19.4 11 15 C11 12.2 13.2 10 16 10 C18.8 10 21 12.2 21 15 C21 16.7 19.7 18 18 18" stroke="#1E4FD6" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="18" cy="15" r="1.8" fill="#D9A521"/>
+      </svg>
+      <span class="klabel">ADAPTIVE ENVIRONMENTS LAB · UNIVERSITY OF VIRGINIA</span>
+    </div>
+
+    <h1>Designing environments that <em>sense, learn, and evolve</em>.</h1>
+
+    <p class="lede">
+      The Adaptive Environments Lab is a trans-disciplinary initiative at UVA — Architecture, Landscape Architecture, Medicine, Public Health, Environmental Science — built on one observation: generative AI has just moved expert environmental-design capability from specialist teams to anyone who can ask a good question. Every designed place changes after it's built. Our tools have treated places as frozen; we design for places that adapt — and that produce new knowledge as they do. The designer's role shifts from author to orchestrator, working alongside computational systems, ecological processes, and communities.
+    </p>
+
+    <div class="pgrid">
+      <div class="pcard"><h3>Observational intelligence</h3><p>Design decisions emerge from sustained attention to how environments actually perform — sensing across scales and seasons, processed with machine intelligence.</p></div>
+      <div class="pcard"><h3>Micro-scale adaptation</h3><p>Not large interventions that lock in assumptions — small, continuously informed adjustments that aggregate into systemic change.</p></div>
+      <div class="pcard"><h3>Computational partnership</h3><p>Simulation and machine learning augment human judgment, never replace it. Design stays accountable to the communities and ecologies it serves.</p></div>
+    </div>
+
+    <div class="duo">
+      <div class="block lab">
+        <h3>The teaching lab</h3>
+        <p>We start by teaching it. A <b>teaching chassis</b>: three capture platforms on one corridor — drone + LiDAR by air, 360° cameras by bike, LiDAR + water sensors by canoe — feeding one shared, queryable corpus. Students don't inherit a dataset; they sit down next to a collaborator that has spent all summer learning a place. The pedagogy bets on workflows that survive rapid model change — and on giving students the confidence to engage AI rather than fear it.</p>
+      </div>
+      <div class="block riv">
+        <h3>First implementation: the Rivanna corridor</h3>
+        <p>The Rivanna River in Charlottesville is implementation #1 — close, ecologically rich, publicly loved. Its corridor intelligence becomes a civic asset: riparian health, species, and flood behavior answered from the same scans as shade, trail access, and health equity. The pattern is built to transfer — next corridors, next campuses, next regions. Everything else in the lab's vision grows from here.</p>
+      </div>
+    </div>
+
+    <div class="people">
+      <div class="person">
+        <div class="avatar">MT</div>
+        <div><b>Matthew Trowbridge, MD, MPH</b>
+        <p>Associate Professor, Emergency Medicine &amp; Public Health Sciences; Director, UVA Medical Design Program. Built-environment &amp; health researcher; former Chief Medical Officer, International WELL Building Institute.</p></div>
+      </div>
+      <div class="person">
+        <div class="avatar g">BC</div>
+        <div><b>Bradley Cantrell, MLA</b>
+        <p>Commonwealth Professor of Landscape Architecture, UVA School of Architecture. A leading figure in computational design — field sensing, robotics, and simulation across major river systems.</p></div>
+      </div>
+    </div>
+
+    <div class="intro-cta">
+      <button class="enter-btn" onclick="showIntro(false)">Enter the workspace demo →</button>
+      <a class="ghost-btn" href="../../students/">What students do →</a>
+      <div class="fine">A working concept of what a student opens in September 2026.<br>Synthetic data · the interaction pattern is the point.</div>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="mark">
+    <!-- chameleon-tail spiral mark, rally blue + gold eye -->
+    <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="AEL mark">
+      <path d="M15 27 C8.4 27 3 21.6 3 15 C3 8.4 8.4 3 15 3 C21.6 3 27 8.4 27 15 C27 19.4 23.4 23 19 23 C14.6 23 11 19.4 11 15 C11 12.2 13.2 10 16 10 C18.8 10 21 12.2 21 15 C21 16.7 19.7 18 18 18" stroke="#1E4FD6" stroke-width="2.6" stroke-linecap="round"/>
+      <circle cx="18" cy="15" r="1.8" fill="#D9A521"/>
+    </svg>
+    <div class="word">A<span>E</span>L</div>
+  </div>
+  <div class="crumb"><b>Rivanna Corridor</b> · Fall 2026 · Studio Workspace</div>
+  <div class="spacer"></div>
+  <span class="badge">CONCEPT DEMO · SYNTHETIC DATA</span>
+  <button class="hood-btn" onclick="showIntro(true)">About AEL</button>
+  <a class="hood-btn" href="../../students/">Students</a>
+  <a class="hood-btn" href="../../">AEL home</a>
+  <button class="hood-btn" id="hoodbtn" onclick="toggleHood()">Under the hood</button>
+</header>
+
+<div class="banner">
+  <span class="dot"></span>
+  <span><b>Last updated Sunday 6:47 PM</b>&nbsp; — canoe pass covering miles 4.2–7.8 · new turbidity readings · 12 species verifications from Friday's field trip</span>
+</div>
+
+<div id="hood">
+  <div class="flow">
+    <div class="stage"><h4>CAPTURE · 3 PLATFORMS</h4><div>Drone + L2 LiDAR (air)<br>360° cameras by bike (trail)<br>LiDAR + sensors by canoe (water)</div></div>
+    <div class="arrow">→</div>
+    <div class="stage"><h4>INTAKE PIPELINE</h4><div>Tag · validate · process<br>Location, device, conditions,<br>contributor — automatic</div></div>
+    <div class="arrow">→</div>
+    <div class="stage"><h4>CORPUS</h4><div>Object storage (S3-pattern)<br>COG · GeoParquet · STAC<br>Open, portable formats</div></div>
+    <div class="arrow">→</div>
+    <div class="stage"><h4>CAPABILITY CATALOG</h4><div>Canopy · species ID · change<br>Cross-sections · acoustics<br>Deterministic + AI workflows</div></div>
+    <div class="arrow">→</div>
+    <div class="stage"><h4>SURFACES</h4><div>This workspace (students + faculty)<br>Field app (verification loop)<br>Public corridor site</div></div>
+  </div>
+  <div class="note">Raw captures land in university storage; the processed corpus targets an S3-compatible object store with open spatial standards throughout — no lock-in by design. This panel is where the architecture conversation starts.</div>
+</div>
+
+<main>
+  <section id="chat">
+    <div id="log">
+      <div class="hello">
+        Good morning. I'm the corridor assistant — I work from this summer's three drone flights, the bike 360° passes, the canoe LiDAR runs, and Friday's field verifications.<br><br>
+        Ask me a design question, or start with one of the prompts below. I'll tell you what the corridor knows — and what it doesn't.
+      </div>
+    </div>
+    <div id="chips">
+      <button class="chip" id="c0" onclick="runScript(0)">Where is trail shade most compromised — and does that overlap with invasive honeysuckle?</button>
+      <button class="chip" id="c1" onclick="runScript(1)">I'm considering a pilot intervention near Elk Run. Anything I should know?</button>
+      <button class="chip" id="c2" onclick="runScript(2)">What don't we know yet about this corridor?</button>
+    </div>
+    <div id="inputrow">
+      <input id="inp" placeholder="Ask the corridor…" onkeydown="if(event.key==='Enter')freeAsk()">
+      <button id="send" onclick="freeAsk()">Ask</button>
+    </div>
+  </section>
+
+  <section id="mapwrap">
+    <svg id="map" viewBox="0 0 820 600" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="hatch" width="7" height="7" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+          <rect width="7" height="7" fill="none"/>
+          <line x1="0" y1="0" x2="0" y2="7" stroke="#C2542E" stroke-width="1.6" stroke-opacity=".5"/>
+        </pattern>
+        <linearGradient id="riverfill" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" stop-color="#5E9CC9"/><stop offset="1" stop-color="#7FB5D9"/>
+        </linearGradient>
+      </defs>
+
+      <!-- terrain hints -->
+      <g opacity=".5">
+        <ellipse cx="160" cy="120" rx="130" ry="60" fill="#E3EBDD"/>
+        <ellipse cx="640" cy="470" rx="170" ry="80" fill="#E3EBDD"/>
+        <ellipse cx="690" cy="120" rx="120" ry="70" fill="#EAEFE4"/>
+      </g>
+
+      <!-- River: SW to NE -->
+      <path id="riverpath" d="M40,560 C140,520 150,440 230,400 C310,360 330,300 400,270 C470,240 520,210 580,160 C630,118 700,90 790,60"
+            fill="none" stroke="url(#riverfill)" stroke-width="26" stroke-linecap="round" opacity=".9"/>
+      <path d="M40,560 C140,520 150,440 230,400 C310,360 330,300 400,270 C470,240 520,210 580,160 C630,118 700,90 790,60"
+            fill="none" stroke="#4D88B5" stroke-width="2" opacity=".55"/>
+
+      <!-- Trail: dashed, river-adjacent -->
+      <path id="trailpath" d="M70,585 C175,545 190,460 265,425 C345,388 360,330 430,300 C500,272 555,240 612,192 C660,152 720,124 800,96"
+            fill="none" stroke="#8A6B3F" stroke-width="3.5" stroke-dasharray="9 7" opacity=".85"/>
+
+      <!-- Mile markers -->
+      <g font-size="11" fill="#5A6B8C" font-family="ui-monospace,Menlo,monospace">
+        <circle cx="178" cy="468" r="3" fill="#5A6B8C"/><text x="188" y="472">M5</text>
+        <circle cx="352" cy="338" r="3" fill="#5A6B8C"/><text x="362" y="342">M6</text>
+        <circle cx="540" cy="248" r="3" fill="#5A6B8C"/><text x="550" y="252">M7</text>
+        <circle cx="688" cy="138" r="3" fill="#5A6B8C"/><text x="698" y="142">M8</text>
+      </g>
+      <!-- Elk Run -->
+      <g id="elkrun">
+        <path d="M430,300 C448,330 470,338 498,360" stroke="#6FA8D6" stroke-width="7" fill="none" opacity=".8" stroke-linecap="round"/>
+        <text x="500" y="378" font-size="11.5" fill="#3D5378" font-style="italic">Elk Run</text>
+        <circle id="elkpulse" cx="468" cy="336" r="14" fill="none" stroke="#C2542E" stroke-width="3" opacity="0"/>
+      </g>
+
+      <!-- LAYER: canopy -->
+      <g id="lyr-canopy" class="lyr off">
+        <ellipse cx="250" cy="380" rx="58" ry="30" fill="#5F9E66" opacity=".38"/>
+        <ellipse cx="395" cy="255" rx="64" ry="30" fill="#5F9E66" opacity=".45"/>
+        <ellipse cx="600" cy="150" rx="56" ry="26" fill="#5F9E66" opacity=".42"/>
+        <ellipse cx="120" cy="520" rx="52" ry="26" fill="#5F9E66" opacity=".34"/>
+        <!-- thinned canopy stretch -->
+        <ellipse cx="330" cy="345" rx="46" ry="22" fill="#9FBF8E" opacity=".30"/>
+        <ellipse cx="480" cy="225" rx="44" ry="20" fill="#A8C295" opacity=".26"/>
+      </g>
+
+      <!-- LAYER: trail condition -->
+      <g id="lyr-trail" class="lyr off" stroke-width="6" fill="none" stroke-linecap="round">
+        <path d="M70,585 C175,545 190,460 265,425" stroke="#2F7DD1" opacity=".85"/>
+        <path d="M265,425 C345,388 360,330 430,300" stroke="#D9A521" opacity=".9"/>
+        <path d="M430,300 C500,272 555,240 612,192" stroke="#2F7DD1" opacity=".85"/>
+        <path d="M612,192 C660,152 720,124 800,96" stroke="#C2542E" opacity=".85"/>
+      </g>
+
+      <!-- LAYER: water quality (canoe) -->
+      <g id="lyr-water" class="lyr off">
+        <g fill="#2E8FA3">
+          <circle cx="150" cy="498" r="5"/><circle cx="232" cy="398" r="5"/>
+          <circle cx="300" cy="345" r="5"/><circle cx="402" cy="268" r="5"/>
+          <circle cx="468" cy="336" r="6" fill="#C2542E"/>
+          <circle cx="500" cy="225" r="5"/><circle cx="585" cy="158" r="5"/>
+        </g>
+        <text x="118" y="488" font-size="10" fill="#2E8FA3" font-family="ui-monospace,Menlo,monospace">turbidity ↑</text>
+      </g>
+
+      <!-- LAYER: species (verified vs not) -->
+      <g id="lyr-species" class="lyr off">
+        <g fill="#D9A521" stroke="#9C7510" stroke-width="1.4">
+          <circle cx="300" cy="368" r="5.5"/><circle cx="322" cy="352" r="5.5"/>
+          <circle cx="282" cy="402" r="5.5"/><circle cx="430" cy="282" r="5.5"/>
+          <circle cx="448" cy="262" r="5.5"/><circle cx="206" cy="430" r="5.5"/>
+        </g>
+        <g fill="none" stroke="#D9A521" stroke-width="1.8" stroke-dasharray="2.5 2.5">
+          <circle cx="560" cy="200" r="5.5"/><circle cx="592" cy="178" r="5.5"/>
+          <circle cx="618" cy="200" r="5.5"/><circle cx="648" cy="156" r="5.5"/>
+          <circle cx="140" cy="540" r="5.5"/>
+        </g>
+      </g>
+
+      <!-- LAYER: canoe LiDAR cross-sections -->
+      <g id="lyr-lidar" class="lyr off" stroke="#15368F" stroke-width="2.6" opacity=".85">
+        <line x1="142" y1="492" x2="170" y2="520"/>
+        <line x1="222" y1="392" x2="252" y2="416"/>
+        <line x1="296" y1="332" x2="324" y2="356"/>
+        <line x1="392" y1="258" x2="420" y2="282"/>
+        <line x1="456" y1="322" x2="484" y2="348" stroke="#C2542E" stroke-width="3.4"/>
+        <line x1="492" y1="216" x2="520" y2="240"/>
+      </g>
+
+      <!-- LAYER: 360 nodes -->
+      <g id="lyr-360" class="lyr off" fill="#7B5CC9">
+        <rect x="120" y="556" width="8" height="8" rx="2"/><rect x="228" y="448" width="8" height="8" rx="2"/>
+        <rect x="318" y="362" width="8" height="8" rx="2"/><rect x="452" y="288" width="8" height="8" rx="2"/>
+        <rect x="572" y="218" width="8" height="8" rx="2"/><rect x="668" y="148" width="8" height="8" rx="2"/>
+      </g>
+
+      <!-- LAYER: uncertainty -->
+      <g id="lyr-unc" class="lyr off">
+        <path d="M612,192 C660,152 720,124 800,96 L800,140 C730,166 678,192 632,228 Z" fill="url(#hatch)" stroke="#C2542E" stroke-width="1.4" stroke-dasharray="5 4" opacity=".9"/>
+        <ellipse cx="588" cy="186" rx="70" ry="40" fill="url(#hatch)" stroke="#C2542E" stroke-width="1.2" stroke-dasharray="5 4" opacity=".75"/>
+        <ellipse cx="120" cy="430" rx="55" ry="34" fill="url(#hatch)" stroke="#C2542E" stroke-width="1.2" stroke-dasharray="5 4" opacity=".7"/>
+        <text x="60" y="392" font-size="11" fill="#C2542E">no acoustic coverage</text>
+        <text x="640" y="250" font-size="11" fill="#C2542E">bike pass overdue · unverified IDs</text>
+      </g>
+
+      <!-- ZONES (query 1) -->
+      <g id="zones">
+        <g class="zone" id="z1">
+          <rect x="296" y="318" width="92" height="58" rx="12" fill="#1E4FD6" opacity=".16"/>
+          <rect x="296" y="318" width="92" height="58" rx="12" fill="none" stroke="#1E4FD6" stroke-width="2.4"/>
+          <circle id="z1pulse" class="pulse-ring" cx="342" cy="347" r="14" fill="none" stroke="#1E4FD6" stroke-width="3"/>
+          <text x="304" y="334" font-size="12" font-weight="700" fill="#15368F">Zone 1 · mile 5.6</text>
+        </g>
+        <g class="zone" id="z2">
+          <rect x="200" y="396" width="84" height="52" rx="12" fill="#1E4FD6" opacity=".11"/>
+          <rect x="200" y="396" width="84" height="52" rx="12" fill="none" stroke="#1E4FD6" stroke-width="2"/>
+          <text x="208" y="412" font-size="11.5" font-weight="700" fill="#15368F">Zone 2</text>
+        </g>
+        <g class="zone" id="z3">
+          <rect x="548" y="170" width="92" height="54" rx="12" fill="#D9A521" opacity=".12"/>
+          <rect x="548" y="170" width="92" height="54" rx="12" fill="none" stroke="#D9A521" stroke-width="2.2" stroke-dasharray="7 5"/>
+          <text x="556" y="186" font-size="11.5" font-weight="700" fill="#9C7510">Zone 3 · unverified</text>
+        </g>
+        <g class="zone" id="z4">
+          <rect x="430" y="248" width="78" height="48" rx="12" fill="#1E4FD6" opacity=".09"/>
+          <rect x="430" y="248" width="78" height="48" rx="12" fill="none" stroke="#1E4FD6" stroke-width="1.8"/>
+          <text x="438" y="264" font-size="11.5" font-weight="700" fill="#15368F">Zone 4</text>
+        </g>
+      </g>
+
+      <!-- compass + scale -->
+      <g transform="translate(770,560)" font-size="10" fill="#5A6B8C">
+        <line x1="0" y1="0" x2="0" y2="-26" stroke="#5A6B8C" stroke-width="1.6"/>
+        <path d="M0,-26 l-4,8 l4,-3 l4,3 Z" fill="#5A6B8C"/>
+        <text x="-3" y="14">N</text>
+      </g>
+    </svg>
+
+    <div id="layers">
+      <h3>CORRIDOR LAYERS</h3>
+      <label><input type="checkbox" data-lyr="lyr-canopy" onchange="setLyr(this)"><span class="sw" style="background:#5F9E66"></span>Canopy · 3 drone flights</label>
+      <label><input type="checkbox" data-lyr="lyr-trail" onchange="setLyr(this)"><span class="sw" style="background:#2F7DD1"></span>Trail condition · bike 360°</label>
+      <label><input type="checkbox" data-lyr="lyr-water" onchange="setLyr(this)"><span class="sw" style="background:#2E8FA3"></span>Water quality · canoe</label>
+      <label><input type="checkbox" data-lyr="lyr-species" onchange="setLyr(this)"><span class="sw" style="background:#D9A521"></span>Species ID · verified ●/○</label>
+      <label><input type="checkbox" data-lyr="lyr-lidar" onchange="setLyr(this)"><span class="sw" style="background:#15368F"></span>LiDAR cross-sections</label>
+      <label><input type="checkbox" data-lyr="lyr-360" onchange="setLyr(this)"><span class="sw" style="background:#7B5CC9"></span>360° imagery nodes</label>
+      <label><input type="checkbox" data-lyr="lyr-unc" onchange="setLyr(this)"><span class="sw" style="background:repeating-linear-gradient(45deg,#C2542E,#C2542E 2px,#fff 2px,#fff 4px)"></span>Uncertainty / overdue</label>
+    </div>
+
+    <div id="legendzones"><b>Candidate zones</b> — ranked by shade-loss × honeysuckle overlap.<br>Zone 1 strongest · Zone 3 awaiting field verification.</div>
+  </section>
+</main>
+
+<footer>
+  <span>Concept demonstration — synthetic data. Target student experience: September 2026.</span>
+  <span>Adaptive Environments Lab · University of Virginia · adaptiveenvironmentslab.org</span>
+</footer>
+
+<script>
+"use strict";
+var busy = false;
+
+function toggleHood(){
+  document.getElementById("hood").classList.toggle("open");
+}
+
+function showIntro(show){
+  document.getElementById("intro").classList.toggle("hidden", !show);
+}
+
+function setLyr(cb){
+  var g = document.getElementById(cb.getAttribute("data-lyr"));
+  if(g){ g.classList.toggle("off", !cb.checked); }
+}
+function forceLyr(id, on){
+  var g = document.getElementById(id);
+  if(g){ g.classList.toggle("off", !on); }
+  var box = document.querySelector('#layers input[data-lyr="'+id+'"]');
+  if(box){ box.checked = on; }
+}
+
+function el(tag, cls, html){
+  var d = document.createElement(tag);
+  if(cls) d.className = cls;
+  if(html !== undefined) d.innerHTML = html;
+  return d;
+}
+function logEl(){ return document.getElementById("log"); }
+function scrollLog(){ var L = logEl(); L.scrollTop = L.scrollHeight; }
+
+function addUser(text){
+  logEl().appendChild(el("div","msg user",text));
+  scrollLog();
+}
+function addTrace(html, delay){
+  return new Promise(function(res){
+    setTimeout(function(){
+      logEl().appendChild(el("div","trace","▸ "+html));
+      scrollLog(); res();
+    }, delay);
+  });
+}
+function streamSys(html, extraHTML){
+  return new Promise(function(res){
+    var bubble = el("div","msg sys typing","");
+    logEl().appendChild(bubble); scrollLog();
+    // strip tags for streaming, then swap in full HTML at the end
+    var plain = html.replace(/<[^>]+>/g,"");
+    var i = 0;
+    var t = setInterval(function(){
+      i += 3;
+      bubble.textContent = plain.slice(0,i);
+      scrollLog();
+      if(i >= plain.length){
+        clearInterval(t);
+        bubble.classList.remove("typing");
+        bubble.innerHTML = html + (extraHTML || "");
+        scrollLog(); res();
+      }
+    }, 14);
+  });
+}
+
+var bankSVG = '<div class="miniprofile"><svg width="100%" height="86" viewBox="0 0 300 86">' +
+  '<text x="6" y="13" font-size="9.5" fill="#5A6B8C" font-family="ui-monospace,Menlo,monospace">Bank cross-section · mile 6.9 (south bank)</text>' +
+  '<path d="M10,30 C60,32 110,36 150,46 C190,56 240,62 290,64" fill="none" stroke="#9FB3D9" stroke-width="2" stroke-dasharray="5 4"/>' +
+  '<path d="M10,30 C60,33 100,40 138,58 C160,68 180,70 290,72" fill="none" stroke="#C2542E" stroke-width="2.4"/>' +
+  '<text x="12" y="80" font-size="9" fill="#9FB3D9">— May baseline</text>' +
+  '<text x="105" y="80" font-size="9" fill="#C2542E">— Sunday canoe pass (steepened)</text>' +
+  '</svg></div>';
+
+var SCRIPTS = [
+  {
+    user: "I want to understand where shade along the trail is most compromised, and whether that overlaps with where invasive honeysuckle is densest. Is there a place where doing something about one would help the other?",
+    traces: [
+      "<b>canopy.density</b> — 3 summer drone flights vs trail centerline",
+      "<b>species.classify</b> — BioCLIP honeysuckle · field-verified subset",
+      "<b>overlap.rank</b> — composing candidate zones"
+    ],
+    answer: "Yes — four candidate zones, ranked by overlap strength, now on your map. <b>Zone 1 (mile 5.6, south bank) is the strongest:</b> canopy density along the trail there has dropped ~22% since the June flight, and it coincides with the densest field-verified honeysuckle stand on the corridor. A targeted removal-and-replanting there plausibly serves both goals.",
+    caveat: "Two caveats. The classifications in <b>Zone 3 have not been field-verified yet</b> — treat that one as preliminary. And the July flight shows unusually low canopy through this whole section, which suggests the shade problem may be <i>newer</i> than the honeysuckle problem. Worth checking before treating them as one intervention.",
+    map: function(){
+      forceLyr("lyr-canopy", true);
+      forceLyr("lyr-species", true);
+      ["z1","z2","z3","z4"].forEach(function(z){ document.getElementById(z).classList.add("on"); });
+      document.getElementById("legendzones").style.display = "block";
+    }
+  },
+  {
+    user: "I'm considering a pilot intervention near Elk Run. Anything I should know?",
+    traces: [
+      "<b>field.notes</b> — Friday field trip · miles 6.8–7.1",
+      "<b>lidar.cross_section</b> — Sunday canoe pass · south bank"
+    ],
+    answer: "One flag before you commit: <b>Friday's field trip recorded riparian bank instability exactly there</b>, and Sunday's canoe LiDAR confirms it — the south-bank profile at mile 6.9 has steepened noticeably against the May baseline (cross-section below). Any intervention at Elk Run should account for bank morphology.",
+    caveat: "I can pull the full point cloud of the bank at this location if that's useful for the design.",
+    extra: bankSVG,
+    map: function(){
+      forceLyr("lyr-lidar", true);
+      forceLyr("lyr-water", true);
+      var p = document.getElementById("elkpulse");
+      p.setAttribute("opacity","1");
+      p.classList.add("pulse-ring");
+      setTimeout(function(){ p.setAttribute("opacity","0"); p.classList.remove("pulse-ring"); }, 6500);
+    }
+  },
+  {
+    user: "What don't we know yet about this corridor?",
+    traces: [
+      "<b>corpus.coverage</b> — scan recency by segment",
+      "<b>confidence.map</b> — classifications below threshold"
+    ],
+    answer: "Three honest gaps, now hatched on your map. <b>The bike 360° pass for miles 8.1–9.0 is overdue</b> — trail-condition data there is six weeks old. <b>Species IDs north of Elk Run are mostly unverified</b> — model confidence drops in dense understory. And we have <b>no acoustic coverage on the west bank</b> at all.",
+    caveat: "If your studio question depends on any of these, the fastest fix is a targeted capture run — I can draft the plan and flag it for the next field day.",
+    map: function(){ forceLyr("lyr-unc", true); }
+  }
+];
+
+function runScript(i){
+  if(busy) return;
+  busy = true;
+  var btn = document.getElementById("c"+i);
+  if(btn) btn.disabled = true;
+  var s = SCRIPTS[i];
+  addUser(s.user);
+  var chain = Promise.resolve();
+  s.traces.forEach(function(tr, k){
+    chain = chain.then(function(){ return addTrace(tr, k === 0 ? 500 : 750); });
+  });
+  chain.then(function(){
+    return new Promise(function(r){ setTimeout(r, 450); });
+  }).then(function(){
+    var full = s.answer + '<div class="cav">' + s.caveat + '</div>';
+    return streamSys(full, s.extra || "");
+  }).then(function(){
+    s.map();
+    busy = false;
+  });
+}
+
+function freeAsk(){
+  if(busy) return;
+  var inp = document.getElementById("inp");
+  var q = inp.value.trim();
+  if(!q) return;
+  inp.value = "";
+  busy = true;
+  addUser(q);
+  addTrace("<b>capability.catalog</b> — routing question", 500).then(function(){
+    return streamSys("Demo mode — in the live workspace this routes against the corridor capability catalog (canopy analysis, species ID, seasonal change, cross-sections, acoustics) and composes an answer from real captures. Try one of the scripted queries below to see the full pattern.");
+  }).then(function(){ busy = false; });
+}
+</script>
+</body>
+</html>
