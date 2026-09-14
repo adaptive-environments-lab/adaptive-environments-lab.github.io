@@ -1,748 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Adaptive Environments Lab | AI-Enabled Environmental Design at UVA</title>
-  <meta name="description" content="A trans-disciplinary research initiative designing environmental technologies that sense, learn, and evolve. Based at the University of Virginia.">
-  <meta property="og:title" content="Adaptive Environments Lab">
-  <meta property="og:description" content="Designing environmental technologies that sense, learn, and evolve.">
-  <meta property="og:type" content="website">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    :root {
-      --rally-blue: #003DA5;
-      --rally-blue-dark: #002D7A;
-      --wrx-gold: #C9A227;
-      --fog: #E8E8E8;
-      --snow: #FAFAFA;
-    }
-    
-    html {
-      scroll-behavior: smooth;
-    }
-    
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background-color: var(--rally-blue);
-      color: var(--fog);
-      line-height: 1.7;
-    }
-    
-    h1, h2, h3, h4 {
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-    }
-    
-    a {
-      color: var(--wrx-gold);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    
-    a:hover {
-      color: var(--snow);
-    }
-    
-    /* Navigation */
-    .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      transition: background-color 0.3s, backdrop-filter 0.3s;
-    }
-    
-    .nav.scrolled {
-      background-color: rgba(0, 61, 165, 0.95);
-      backdrop-filter: blur(8px);
-    }
-    
-    .nav-inner {
-      max-width: 1152px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    
-    .nav-logo {
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-      font-weight: 600;
-      color: var(--fog);
-      text-decoration: none;
-    }
-    
-    .nav-links {
-      display: flex;
-      gap: 32px;
-    }
-    
-    .nav-links a {
-      font-size: 14px;
-      color: var(--fog);
-      position: relative;
-    }
-    
-    .nav-links a:hover {
-      color: var(--wrx-gold);
-    }
-    
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background-color: var(--wrx-gold);
-      transition: width 0.3s;
-    }
-    
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-    
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--fog);
-      cursor: pointer;
-      padding: 8px;
-    }
-    
-    .mobile-menu {
-      display: none;
-      background-color: var(--rally-blue-dark);
-      border-top: 1px solid rgba(232, 232, 232, 0.2);
-    }
-    
-    .mobile-menu.open {
-      display: block;
-    }
-    
-    .mobile-menu a {
-      display: block;
-      padding: 16px 24px;
-      color: var(--fog);
-    }
-    
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-      }
-      .mobile-menu-btn {
-        display: block;
-      }
-    }
-    
-    /* Hero */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding: 0 24px;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      opacity: 0.05;
-      background-image: linear-gradient(var(--wrx-gold) 1px, transparent 1px), 
-                        linear-gradient(90deg, var(--wrx-gold) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-    
-    .hero-content {
-      position: relative;
-      z-index: 10;
-      max-width: 1024px;
-      padding-left: 24px;
-    }
-    
-    .hero h1 {
-      font-size: clamp(3rem, 12vw, 8rem);
-      font-weight: 700;
-      color: var(--wrx-gold);
-      line-height: 0.85;
-      letter-spacing: -0.02em;
-    }
-    
-    .hero h1 span {
-      display: block;
-    }
-    
-    .hero-tagline {
-      font-size: clamp(1.25rem, 3vw, 1.5rem);
-      color: var(--snow);
-      margin-top: 32px;
-    }
-    
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background-color: var(--wrx-gold);
-      color: var(--rally-blue);
-      font-weight: 500;
-      border-radius: 4px;
-      border: none;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      text-decoration: none;
-    }
-    
-    .btn:hover {
-      background-color: var(--snow);
-      color: var(--rally-blue);
-    }
-    
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid rgba(232, 232, 232, 0.4);
-      color: var(--fog);
-    }
-    
-    .btn-outline:hover {
-      border-color: var(--wrx-gold);
-      color: var(--wrx-gold);
-      background-color: transparent;
-    }
-    
-    .hero-btns {
-      margin-top: 40px;
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    
-    /* Explore: three components */
-    .explore h2 {
-      font-size: 1.875rem;
-      color: var(--wrx-gold);
-      margin-bottom: 8px;
-    }
-    
-    .explore-subtitle {
-      font-size: 1.125rem;
-      max-width: 896px;
-      margin-bottom: 48px;
-    }
-    
-    .explore-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 32px;
-    }
-    
-    .explore-card {
-      display: block;
-      background-color: var(--rally-blue-dark);
-      padding: 32px;
-      border-radius: 8px;
-      border: 1px solid rgba(232, 232, 232, 0.2);
-      color: var(--fog);
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    
-    .explore-card:hover {
-      border-color: var(--wrx-gold);
-      transform: translateY(-4px);
-      color: var(--fog);
-    }
-    
-    .explore-card h3 {
-      font-size: 1.25rem;
-      color: var(--wrx-gold);
-      margin-bottom: 12px;
-    }
-    
-    .explore-card p {
-      margin-bottom: 16px;
-    }
-    
-    .explore-card .card-cta {
-      font-size: 14px;
-      color: var(--wrx-gold);
-      font-weight: 500;
-    }
-    
-    /* Sections */
-    .section {
-      padding: 96px 24px;
-      opacity: 0;
-      transform: translateY(32px);
-      transition: opacity 0.7s, transform 0.7s;
-    }
-    
-    .section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    
-    .section-inner {
-      max-width: 896px;
-      margin: 0 auto;
-    }
-    
-    .section-wide {
-      max-width: 1152px;
-      margin: 0 auto;
-    }
-    
-    /* Mission */
-    .mission p {
-      font-size: 18px;
-      margin-bottom: 24px;
-    }
-    
-    .principles {
-      margin-top: 64px;
-    }
-    
-    .principles h3 {
-      font-size: 1.5rem;
-      color: var(--snow);
-      margin-bottom: 32px;
-    }
-    
-    .principle {
-      border-left: 2px solid var(--wrx-gold);
-      padding-left: 24px;
-      margin-bottom: 32px;
-    }
-    
-    .principle h4 {
-      font-size: 1.25rem;
-      color: var(--wrx-gold);
-      margin-bottom: 12px;
-    }
-    
-    .principles-footer {
-      margin-top: 40px;
-      font-size: 18px;
-    }
-    
-    /* Team */
-    .team {
-      background-color: var(--rally-blue-dark);
-    }
-    
-    .team h2 {
-      font-size: 1.875rem;
-      color: var(--wrx-gold);
-      margin-bottom: 8px;
-    }
-    
-    .team-subtitle {
-      font-size: 1.25rem;
-      margin-bottom: 48px;
-    }
-    
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 32px;
-    }
-    
-    .team-card {
-      background-color: var(--rally-blue);
-      padding: 32px;
-      border-radius: 8px;
-      border: 1px solid rgba(232, 232, 232, 0.2);
-    }
-    
-    .team-avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      margin-bottom: 24px;
-      background-color: var(--rally-blue-dark);
-      border: 2px solid var(--wrx-gold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--wrx-gold);
-      font-family: 'Space Grotesk', system-ui, sans-serif;
-    }
-    
-    /* For actual deployment with images:
-    .team-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-      filter: grayscale(100%);
-    }
-    */
-    
-    .team-card h3 {
-      font-size: 1.25rem;
-      color: var(--wrx-gold);
-      margin-bottom: 4px;
-    }
-    
-    .team-card .title {
-      font-size: 14px;
-      color: rgba(232, 232, 232, 0.6);
-      margin-bottom: 16px;
-    }
-    
-    .team-card .bio {
-      margin-bottom: 24px;
-    }
-    
-    .team-links {
-      display: flex;
-      gap: 16px;
-    }
-    
-    .team-links a {
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    
-    /* Connect */
-    .connect {
-      text-align: center;
-    }
-    
-    .connect h2 {
-      font-size: 1.875rem;
-      color: var(--wrx-gold);
-      margin-bottom: 24px;
-    }
-    
-    .connect-text {
-      font-size: 18px;
-      max-width: 640px;
-      margin: 0 auto 32px;
-    }
-    
-    .connect-cta {
-      margin-bottom: 40px;
-    }
-    
-    .connect-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
-      margin-bottom: 64px;
-    }
-    
-    .connect-location {
-      font-size: 14px;
-      color: rgba(232, 232, 232, 0.6);
-    }
-    
-    /* Footer */
-    .footer {
-      padding: 32px 24px;
-      border-top: 1px solid rgba(232, 232, 232, 0.2);
-    }
-    
-    .footer-inner {
-      max-width: 1152px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-    
-    .footer-copyright {
-      font-size: 14px;
-      color: rgba(232, 232, 232, 0.6);
-    }
-    
-    .footer-links {
-      display: flex;
-      gap: 24px;
-      font-size: 14px;
-    }
-    
-    .footer-links a {
-      color: rgba(232, 232, 232, 0.6);
-    }
-    
-    @media (min-width: 640px) {
-      .footer-inner {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-    }
-    
-    /* Icons */
-    .icon {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      fill: none;
-    }
-    
-    .icon-sm {
-      width: 14px;
-      height: 14px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adaptive Environments Lab | AI-Enabled Environmental Design at UVA</title>
+<meta name="description" content="A trans-disciplinary research initiative designing environmental technologies that sense, learn, and evolve. Based at the University of Virginia.">
+<meta property="og:title" content="Adaptive Environments Lab">
+<meta property="og:description" content="Designing environmental technologies that sense, learn, and evolve.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0D12;
+    --bg-2: #0F141B;
+    --ink: #E8EDF4;
+    --ink-2: #9AA6B8;
+    --ink-3: #5B6779;
+    --line: rgba(232,237,244,0.09);
+    --line-strong: rgba(232,237,244,0.18);
+    --accent: #37DFC2;
+    --accent-soft: rgba(55,223,194,0.10);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: #06120F; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+  .nav { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--line); background: rgba(10,13,18,0.82); backdrop-filter: blur(12px); }
+  .nav-inner { max-width: 1120px; margin: 0 auto; padding: 0 32px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
+  .wordmark { font-family: var(--serif); font-size: 1.35rem; letter-spacing: 0.01em; }
+  .wordmark .dot { color: var(--accent); }
+  .nav-links { display: flex; gap: 26px; }
+  .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+
+  .hero { padding: 120px 0 96px; }
+  .kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+  .display { font-family: var(--serif); font-weight: 400; font-size: clamp(3rem, 7.5vw, 5.75rem); line-height: 1.02; letter-spacing: -0.015em; margin-bottom: 28px; }
+  .display em { font-style: italic; color: var(--accent); }
+  .tagline { font-size: 1.125rem; color: var(--ink-2); max-width: 560px; }
+  .signal { margin-top: 64px; }
+  .signal svg { width: 100%; height: 44px; display: block; }
+  .signal-readout { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .signal-readout .live { color: var(--accent); }
+  .signal-readout .live::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; animation: pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  @media (prefers-reduced-motion: reduce) { .signal-readout .live::before { animation: none; } }
+
+  .section { padding: 88px 0; border-top: 1px solid var(--line); }
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 40px; }
+  .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+  .label.dim { color: var(--ink-3); }
+
+  .work-row { display: grid; grid-template-columns: 44px 1fr auto 32px; align-items: baseline; gap: 24px; padding: 30px 0; border-top: 1px solid var(--line); transition: padding-left 0.25s ease; }
+  .work-row:last-child { border-bottom: 1px solid var(--line); }
+  .work-row .idx { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+  .work-title { font-family: var(--serif); font-weight: 400; font-size: 1.7rem; letter-spacing: -0.01em; line-height: 1.15; transition: color 0.2s; }
+  .work-row:hover .work-title { color: var(--accent); }
+  .work-row:hover { padding-left: 8px; }
+  .work-desc { font-size: 0.95rem; color: var(--ink-2); margin-top: 6px; max-width: 620px; }
+  .work-meta { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+  .work-meta .d { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 6px; }
+  .work-meta .d.live { background: var(--accent); }
+  .work-meta .d.dev { background: var(--ink-3); }
+  .arrow { font-size: 1.2rem; color: var(--ink-3); transition: color 0.2s, transform 0.2s; text-align: right; }
+  .work-row:hover .arrow { color: var(--accent); transform: translateX(4px); }
+
+  .mission-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; }
+  .lead { font-family: var(--serif); font-size: 1.85rem; line-height: 1.3; letter-spacing: -0.01em; text-wrap: pretty; }
+  .mission-body p { color: var(--ink-2); margin-bottom: 20px; font-size: 0.98rem; text-wrap: pretty; }
+
+  .principle-row { display: grid; grid-template-columns: 44px 1fr; gap: 24px; padding: 28px 0; border-top: 1px solid var(--line); }
+  .principle-row:last-child { border-bottom: 1px solid var(--line); }
+  .principle-row .idx { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+  .principle-row h3 { font-family: var(--serif); font-weight: 400; font-size: 1.4rem; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .principle-row p { color: var(--ink-2); font-size: 0.95rem; max-width: 640px; text-wrap: pretty; }
+
+  .team-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 28px 0; border-top: 1px solid var(--line); }
+  .team-row:last-child { border-bottom: 1px solid var(--line); }
+  .team-row h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; letter-spacing: -0.01em; }
+  .team-row .role { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink-2); margin-top: 8px; line-height: 1.7; }
+
+  .connect-line { font-family: var(--mono); font-size: 13px; color: var(--ink-2); margin-bottom: 8px; }
+  .connect-line a { color: var(--accent); border-bottom: 1px solid var(--line-strong); }
+  .connect-line a:hover { border-color: var(--accent); }
+
+  .footer { border-top: 1px solid var(--line); padding: 28px 0 48px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .footer-inner { display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: space-between; }
+
+  @media (max-width: 720px) {
+    .mission-grid { grid-template-columns: 1fr; gap: 28px; }
+    .team-row { grid-template-columns: 1fr; gap: 16px; }
+    .work-row { grid-template-columns: 32px 1fr auto; }
+    .work-row .arrow { display: none; }
+    .nav-links { gap: 16px; }
+  }
+</style>
 </head>
 <body>
-  <!-- Navigation -->
-  <header class="nav" id="nav">
-    <nav class="nav-inner">
-      <a href="#hero" class="nav-logo">AEL</a>
-      <div class="nav-links">
-        <a href="#mission">Mission</a>
-        <a href="/students/">Students</a>
-        <a href="/projects/">Projects</a>
-        <a href="#team">Team</a>
-        <a href="#connect">Connect</a>
-      </div>
-      <button class="mobile-menu-btn" onclick="toggleMenu()" aria-label="Toggle menu">
-        <svg class="icon" viewBox="0 0 24 24" id="menu-icon">
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
-    </nav>
-    <div class="mobile-menu" id="mobile-menu">
-      <a href="#mission" onclick="closeMenu()">Mission</a>
+
+<header class="nav">
+  <nav class="nav-inner">
+    <a href="/" class="wordmark">AEL<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href="/projects/">Work</a>
       <a href="/students/">Students</a>
-      <a href="/projects/">Projects</a>
-      <a href="#team" onclick="closeMenu()">Team</a>
-      <a href="#connect" onclick="closeMenu()">Connect</a>
+      <a href="#mission">Mission</a>
+      <a href="#team">Team</a>
+      <a href="#connect">Connect</a>
     </div>
-  </header>
+  </nav>
+</header>
 
-  <!-- Hero -->
-  <section class="hero" id="hero">
-    <div class="hero-grid"></div>
-    <div class="hero-content">
-      <h1>
-        <span>Adaptive</span>
-        <span>Envıronments</span>
-        <span>Lab</span>
-      </h1>
-      <p class="hero-tagline">Designing environmental technologies that sense, learn, and evolve.</p>
-      <div class="hero-btns">
-        <a href="#mission" class="btn">
-          Learn more
-          <svg class="icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </a>
-        <a href="/projects/" class="btn btn-outline">See the projects →</a>
+<section class="hero" id="top">
+  <div class="wrap">
+    <p class="kicker">Adaptive Environments Lab · UVA</p>
+    <h1 class="display">instruments for<br><em>living</em> places</h1>
+    <p class="tagline">Designing environmental technologies that sense, learn, and evolve.</p>
+
+    <div class="signal">
+      <svg viewBox="0 0 800 44" preserveAspectRatio="none" aria-hidden="true">
+        <polyline points="0,24 40,23 80,25 120,17 150,26 190,22 230,25 270,19 310,24 350,21 390,25 430,23 470,26 510,18 550,24 590,22 630,25 670,20 710,24 760,22 800,23" fill="none" stroke="rgba(232,237,244,0.18)" stroke-width="1"/>
+        <polyline points="560,24 590,22 630,25 670,20 710,24 760,22 800,23" fill="none" stroke="#37DFC2" stroke-width="1.4"/>
+        <circle cx="800" cy="23" r="3" fill="#37DFC2"/>
+      </svg>
+      <div class="signal-readout">
+        <span>Rivanna reach</span>
+        <span>38.029°N / 78.455°W</span>
+        <span>Continuous sensing</span>
+        <span class="live">Live feed</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Mission -->
-  <section class="section mission" id="mission">
-    <div class="section-inner">
-      <p>The Adaptive Environments Lab is a trans-disciplinary research initiative dedicated to designing places that actively promote human and ecological health amid accelerating environmental and societal change. Based at the University of Virginia, the Lab aims to bring together faculty and students from Architecture, Landscape Architecture, Medicine, Public Health, Environmental Science, and Data Science to develop design methods that enable built environments to sense, learn, and evolve.</p>
-      
-      <p>Traditional design methods rely on prediction to anticipate future conditions and build solutions. But prediction fails in complex systems when conditions change faster than infrastructure can adapt. The Lab pursues a different approach grounded in the recognition that complex systems exceed our capacity to fully model or control them. This shifts the designer's role from author to orchestrator, working alongside computational systems, ecological processes, and human communities to shape environments that evolve over time.</p>
-      
-      <p>This work addresses a critical gap in how emerging technologies reach physical environments. Major technology companies—Google, NVIDIA, Microsoft, and others—are investing heavily in spatial computing, environmental AI, digital twin infrastructure, and autonomous systems. Yet translating these capabilities into methods of adaptation for physical spaces remains an open problem. The Lab develops the missing link: workflows that connect persistent sensing networks and edge computing to incremental physical interventions, including autonomous construction methods that can modify environments in response to changing conditions. As industry moves from research prototypes toward deployed systems, partnerships with applied research labs become essential for grounding computational capabilities in the complexity of real places.</p>
-      
-      <div class="principles">
-        <h3>Three principles guide the Lab's work</h3>
-        
-        <div class="principle">
-          <h4>Observational intelligence</h4>
-          <p>Design decisions should emerge from sustained attention to how environments perform. The Lab develops sensing networks and data acquisition workflows that document conditions across scales, from corridor-wide terrain to ground-level vegetation morphology across time, capturing seasonal cycles, infrastructure changes, and the effects of interventions. Computation and machine intelligence are employed to process and represent these large-scale datasets.</p>
-        </div>
-        
-        <div class="principle">
-          <h4>Micro-scale adaptation</h4>
-          <p>Rather than large interventions that lock in assumptions, the Lab explores incremental changes that aggregate and evolve. Small adjustments informed by continuous observation aggregate into systemic transformation, working within rather than against long-term environmental trajectories.</p>
-        </div>
-        
-        <div class="principle">
-          <h4>Computational partnership</h4>
-          <p>Advanced simulation, digital twins, and machine learning offer powerful tools for understanding complex environments. But these technologies have the greatest potential when they augment rather than replace human judgment. The Lab develops methods to integrate human perspectives and management into computational frameworks, ensuring that design remains accountable to the communities and ecologies it serves.</p>
-        </div>
-      </div>
-      
-      <p class="principles-footer">The Lab develops tools and takes on projects that serve as prototypes where physical conditions and computational models evolve together, generating knowledge that transfers across contexts.</p>
-    </div>
-  </section>
-
-  <!-- Explore: three components -->
-  <section class="section explore" id="explore">
-    <div class="section-wide">
-      <h2>The Lab in three parts</h2>
-      <p class="explore-subtitle">We start by teaching it. This summer the Lab is building its teaching chassis on the Rivanna River corridor in Charlottesville — three capture platforms (drone + LiDAR by air, 360° cameras by bike, LiDAR and water sensors by canoe) feeding one shared, queryable corpus. The Rivanna is implementation #1; the pattern is built to transfer.</p>
-      <div class="explore-grid">
-        <a class="explore-card" href="#mission">
-          <h3>01 · The Lab</h3>
-          <p>Philosophy, principles, and people — why adaptive environments, and why now.</p>
-          <span class="card-cta">You're here ↑</span>
-        </a>
-        <a class="explore-card" href="/students/">
-          <h3>02 · Students</h3>
-          <p>What students do and learn: one semester, six stations of a working data ecosystem — from field capture to open contribution.</p>
-          <span class="card-cta">What students do →</span>
-        </a>
-        <a class="explore-card" href="/projects/">
-          <h3>03 · Projects</h3>
-          <p>Working demos, in the open: interactive concepts of corridor intelligence, from the Rivanna teaching chassis to real-time corridor choreography.</p>
-          <span class="card-cta">See the projects →</span>
-        </a>
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head"><span class="label">The Work</span><span class="label dim">01–04</span></div>
+    <div class="work-list">
+      <a class="work-row" href="/demo/rivanna/">
+        <span class="idx">01</span>
+        <div><h3 class="work-title">Rivanna Corridor Workspace</h3><p class="work-desc">A teaching chassis. Ask the corridor a design question, and it answers with evidence and caveats.</p></div>
+        <span class="work-meta"><span class="d live"></span>Live</span><span class="arrow">→</span>
+      </a>
+      <a class="work-row" href="https://ael-woolen-mills.pages.dev/" target="_blank" rel="noopener">
+        <span class="idx">02</span>
+        <div><h3 class="work-title">Woolen Mills Corridor Choreography</h3><p class="work-desc">A working instrument. Live gauge data, sequenced scans, and standing rules that choreograph a corridor.</p></div>
+        <span class="work-meta"><span class="d live"></span>Live</span><span class="arrow">→</span>
+      </a>
+      <a class="work-row" href="https://bradcantrell.github.io/sediment-interface/" target="_blank" rel="noopener">
+        <span class="idx">03</span>
+        <div><h3 class="work-title">Sediment Interface</h3><p class="work-desc">A browser sandbox for fluvial sediment flow, with OpenFOAM export.</p></div>
+        <span class="work-meta"><span class="d live"></span>Live</span><span class="arrow">→</span>
+      </a>
+      <div class="work-row">
+        <span class="idx">04</span>
+        <div><h3 class="work-title">Venice Lagoon Studio</h3><p class="work-desc">A comparative delta laboratory, from Torcello to the MOSE.</p></div>
+        <span class="work-meta"><span class="d dev"></span>In development</span><span class="arrow">→</span>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Team -->
-  <section class="section team" id="team">
-    <div class="section-wide">
-      <h2>Leadership</h2>
-      <p class="team-subtitle">A cross-disciplinary collaboration between Medicine and Architecture</p>
-      
-      <div class="team-grid">
-        <!-- Trowbridge -->
-        <div class="team-card">
-          <div class="team-avatar">
-            <!-- For deployment, replace with:
-            <img src="https://med.virginia.edu/emergency-medicine/wp-content/uploads/sites/232/2026/01/Matthew-Trowbridge-225x300.jpeg" alt="Matthew Trowbridge">
-            -->
-            MT
-          </div>
-          <h3>Matthew Trowbridge, MD, MPH</h3>
-          <p class="title">
-            Associate Professor, Emergency Medicine & Public Health Sciences<br>
-            Director, UVA Medical Design Program<br>
-            School of Medicine + School of Architecture
-          </p>
-          <p class="bio">Trowbridge is a globally recognized researcher in built environment and health. His work has shaped how the field understands connections between physical spaces and health outcomes—strength recognized through roles including Chief Medical Officer of the International WELL Building Institute.</p>
-          <div class="team-links">
-            <a href="https://med.virginia.edu/emergency-medicine/faculty/full-time-faculty/matthew-trowbridge-md/" target="_blank">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              UVA Profile
-            </a>
-            <a href="mailto:mtrowbridge@virginia.edu">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              Email
-            </a>
-          </div>
-        </div>
-        
-        <!-- Cantrell -->
-        <div class="team-card">
-          <div class="team-avatar">
-            <!-- For deployment, replace with:
-            <img src="https://www.arch.virginia.edu/sites/default/files/2023-12/Brad-Cantrell-ByTomDaly-48.jpg" alt="Bradley Cantrell">
-            -->
-            BC
-          </div>
-          <h3>Bradley Cantrell, MLA</h3>
-          <p class="title">
-            Commonwealth Professor, Landscape Architecture<br>
-            School of Architecture
-          </p>
-          <p class="bio">Cantrell is a leading figure in computational design education. His research explores how digital tools can represent, simulate, and reshape how we engage environmental systems—work spanning major river corridors and internationally recognized digital twin initiatives.</p>
-          <div class="team-links">
-            <a href="https://www.arch.virginia.edu/people/bradley-cantrell" target="_blank">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              UVA Profile
-            </a>
-            <a href="mailto:bcantrell@virginia.edu">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              Email
-            </a>
-          </div>
-        </div>
+<section class="section" id="mission">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Mission</span></div>
+    <div class="mission-grid">
+      <p class="lead">A trans-disciplinary initiative designing places that promote human and ecological health amid accelerating environmental change.</p>
+      <div class="mission-body">
+        <p>Traditional design relies on prediction. Prediction fails when conditions change faster than infrastructure can adapt. The Lab takes a different path, with the designer as orchestrator rather than author.</p>
+        <p>The missing link is workflow. It connects persistent sensing and edge computing to small physical interventions, so a place can modify itself in response to what it observes.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Connect -->
-  <section class="section connect" id="connect">
-    <div class="section-inner">
-      <h2>Connect</h2>
-      <p class="connect-text">The Adaptive Environments Lab is based in the School of Architecture at the University of Virginia, with cross-school reach into Medicine, Public Health, and Environmental Science.</p>
-      <p class="connect-cta">Interested in collaboration, student opportunities, or learning more? Get in touch.</p>
-      
-      <div class="connect-buttons">
-        <a href="mailto:ael@virginia.edu" class="btn">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          ael@virginia.edu
-        </a>
-        <a href="https://github.com/adaptive-environments-lab" target="_blank" class="btn btn-outline">
-          <svg class="icon" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-          GitHub
-        </a>
-      </div>
-      
-      <p class="connect-location">Campbell Hall, School of Architecture, University of Virginia</p>
+<section class="section" id="principles">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Principles</span></div>
+    <div class="principle-row"><span class="idx">01</span><div><h3>Observational intelligence</h3><p>Design decisions emerge from sustained attention to how environments perform. Sensing networks document conditions across scales and across time.</p></div></div>
+    <div class="principle-row"><span class="idx">02</span><div><h3>Micro-scale adaptation</h3><p>Small adjustments informed by continuous observation aggregate into systemic change. The work moves with long-term trajectories, not against them.</p></div></div>
+    <div class="principle-row"><span class="idx">03</span><div><h3>Computational partnership</h3><p>Simulation and machine learning augment human judgment, never replace it. Design stays accountable to the communities and ecologies it serves.</p></div></div>
+  </div>
+</section>
+
+<section class="section" id="team">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Leadership</span></div>
+    <div class="team-row">
+      <div><h3>Matthew Trowbridge, MD, MPH</h3><p class="role">Associate Professor, Emergency Medicine &amp; Public Health<br>Director, UVA Medical Design Program</p></div>
+      <div><h3>Bradley Cantrell, MLA</h3><p class="role">Commonwealth Professor, Landscape Architecture<br>School of Architecture</p></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <span class="footer-copyright">© 2026 Adaptive Environments Lab</span>
-      <div class="footer-links">
-        <a href="https://www.arch.virginia.edu" target="_blank">UVA School of Architecture</a>
-        <a href="https://uvamedical.design" target="_blank">UVA Medical Design Program</a>
-      </div>
-    </div>
-  </footer>
+<section class="section" id="connect">
+  <div class="wrap">
+    <div class="section-head"><span class="label">Connect</span></div>
+    <p class="connect-line">ael@virginia.edu</p>
+    <p class="connect-line"><a href="https://github.com/adaptive-environments-lab" target="_blank" rel="noopener">github.com/adaptive-environments-lab ↗</a></p>
+    <p class="connect-line" style="color:var(--ink-3)">Campbell Hall, School of Architecture, University of Virginia</p>
+  </div>
+</section>
 
-  <script>
-    // Navigation scroll effect
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    });
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span>© 2026 Adaptive Environments Lab</span>
+    <span>UVA School of Architecture · UVA Medical Design Program</span>
+  </div>
+</footer>
 
-    // Mobile menu
-    function toggleMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('open');
-    }
-
-    function closeMenu() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.remove('open');
-    }
-
-    // Scroll animations
-    const sections = document.querySelectorAll('.section');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    sections.forEach(section => observer.observe(section));
-  </script>
 </body>
 </html>
