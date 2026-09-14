@@ -125,17 +125,16 @@
     <h1 class="display">instruments for<br><em>living</em> places</h1>
     <p class="tagline">Designing environmental technologies that sense, learn, and evolve.</p>
 
-    <div class="signal">
+    <div class="signal" id="signal">
       <svg viewBox="0 0 800 44" preserveAspectRatio="none" aria-hidden="true">
-        <polyline points="0,24 40,23 80,25 120,17 150,26 190,22 230,25 270,19 310,24 350,21 390,25 430,23 470,26 510,18 550,24 590,22 630,25 670,20 710,24 760,22 800,23" fill="none" stroke="rgba(232,237,244,0.18)" stroke-width="1"/>
-        <polyline points="560,24 590,22 630,25 670,20 710,24 760,22 800,23" fill="none" stroke="#37DFC2" stroke-width="1.4"/>
-        <circle cx="800" cy="23" r="3" fill="#37DFC2"/>
+        <polyline id="sparkline" points="" fill="none" stroke="#37DFC2" stroke-width="1.4" opacity="0.8"/>
+        <circle id="sparkdot" cx="800" cy="23" r="3" fill="#37DFC2" style="display:none"/>
       </svg>
       <div class="signal-readout">
-        <span>Rivanna reach</span>
-        <span>38.029°N / 78.455°W</span>
-        <span>Continuous sensing</span>
-        <span class="live">Live feed</span>
+        <span>USGS 02032515 · S.F. Rivanna River</span>
+        <span id="g-val">— cfs</span>
+        <span id="g-time">checking…</span>
+        <span class="live" id="g-live">Live feed</span>
       </div>
     </div>
   </div>
@@ -217,5 +216,56 @@
   </div>
 </footer>
 
+<script>
+(function(){
+  var W=800, H=44, PAD=3;
+  var line=document.getElementById('sparkline');
+  var dot=document.getElementById('sparkdot');
+  function render(vals){
+    if(!vals||vals.length<2) return;
+    var min=Infinity,max=-Infinity,i;
+    for(i=0;i<vals.length;i++){ if(vals[i].v<min)min=vals[i].v; if(vals[i].v>max)max=vals[i].v; }
+    var range=(max-min)||1;
+    var pts=[];
+    for(i=0;i<vals.length;i++){
+      var x=PAD+i*(W-2*PAD)/(vals.length-1);
+      var y=PAD+(1-(vals[i].v-min)/range)*(H-2*PAD);
+      pts.push(x.toFixed(1)+','+y.toFixed(1));
+    }
+    line.setAttribute('points',pts.join(' '));
+    var last=vals[vals.length-1];
+    var lx=W-PAD, ly=PAD+(1-(last.v-min)/range)*(H-2*PAD);
+    dot.setAttribute('cx',lx.toFixed(1)); dot.setAttribute('cy',ly.toFixed(1));
+    dot.style.display='block';
+    document.getElementById('g-val').textContent=last.v.toFixed(1)+' cfs';
+    var d=new Date(last.t);
+    var hh=d.getHours(), mm=('0'+d.getMinutes()).slice(-2);
+    var lbl=(hh%12||12)+':'+mm+(hh>=12?' PM':' AM');
+    document.getElementById('g-time').textContent='updated '+lbl;
+  }
+  function fail(){
+    document.getElementById('g-val').textContent='— cfs';
+    document.getElementById('g-time').textContent='feed unavailable';
+    document.getElementById('g-live').style.display='none';
+  }
+  function tick(){
+    fetch('https://waterservices.usgs.gov/nwis/iv/?format=json&sites=02032515&parameterCd=00060&siteStatus=all&period=P2D')
+      .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+      .then(function(d){
+        var ts=d.value.timeSeries[0];
+        var raw=ts.values[0].value;
+        var vals=[];
+        raw.forEach(function(v){
+          var n=parseFloat(v.value);
+          if(!isNaN(n)) vals.push({t:v.dateTime,v:n});
+        });
+        render(vals);
+      })
+      .catch(fail);
+  }
+  tick();
+  setInterval(tick,15*60*1000);
+})();
+</script>
 </body>
 </html>
